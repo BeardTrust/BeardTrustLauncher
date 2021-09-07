@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/bt-dev.iml" filepath="$PROJECT_DIR$/.idea/bt-dev.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/bt-launcher.iml" filepath="$PROJECT_DIR$/.idea/bt-launcher.iml" />
     </modules>
   </component>
 </project>

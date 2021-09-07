@@ -142,15 +142,15 @@ class main_page(wx.Frame):
         self.__root_directory = self.m_dirPicker2.GetPath()
 
     def set_configuration(self, event):
+        # To be implemented!
         event.Skip()
 
     def set_profile(self, event):
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
 
     def on_cancel(self, event):
-        event.Skip()
+        exit(0)
 
     def on_ok(self, event):
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
-        args = [self.__root_directory, self.__profile]
         scripts.start.start_application(self.root_directory, self.profile)

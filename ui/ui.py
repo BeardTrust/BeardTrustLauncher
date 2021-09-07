@@ -152,4 +152,5 @@ class main_page(wx.Frame):
 
     def on_ok(self, event):
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
-        subprocess.Popen(scripts.start.start_application(self.root_directory, self.profile))
+        args = [self.__root_directory, self.__profile]
+        scripts.start.start_application(self.root_directory, self.profile)

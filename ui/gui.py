@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import os
 import signal
+from subprocess import Popen
 
 import wx
 import wx.xrc
+
+from wx import Frame
 
 import scripts.start
 
@@ -15,19 +18,19 @@ def graphical_user_interface():
     :return: None           this function does not return a value
     """
     app = wx.App()
-    page = main_page(None)
+    page = LauncherWindow(None)
     page.Show()
     app.MainLoop()
 
 
-class main_page(wx.Frame):
+class LauncherWindow(wx.Frame):
     """
     This class represents the primary frame, or window, of the graphical user interface.  It encapsulates
     all of the logic for transferring information from the interface to the scripts that perform the
     business logic of the application.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent: wx.Frame) -> None:
         """
         The constructor for the main page takes a parent object as an argument and assembles the main
         page object.
@@ -43,7 +46,7 @@ class main_page(wx.Frame):
         self.__child_processes = []
         self.SetSizeHints(wx.Size(500, 300), wx.Size(500, 300))
 
-        vertical_sizer_one = wx.BoxSizer(wx.VERTICAL)
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
 
         first_row = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -53,7 +56,7 @@ class main_page(wx.Frame):
                                                   wx.DefaultSize, 0)
         self.root_directory_label.Wrap(-1)
 
-        first_row_first_column.Add(self.root_directory_label, 0, wx.ALL | wx.EXPAND, 5)
+        first_row_first_column.Add(self.root_directory_label, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL | wx.BOTTOM, 13)
 
         first_row.Add(first_row_first_column, 1, wx.ALIGN_BOTTOM, 5)
 
@@ -65,7 +68,7 @@ class main_page(wx.Frame):
 
         first_row.Add(first_row_second_column, 3, wx.ALIGN_BOTTOM, 5)
 
-        vertical_sizer_one.Add(first_row, 1, wx.EXPAND, 5)
+        main_sizer.Add(first_row, 1, wx.EXPAND, 5)
 
         second_row = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -81,9 +84,9 @@ class main_page(wx.Frame):
 
         second_row_second_column = wx.BoxSizer(wx.VERTICAL)
 
-        configuration_choice_boxChoices = []
+        configuration_choices = [u'Local Collection', u'Spring Boot', u'NPM', u'Yarn']
         self.configuration_choice_box = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize,
-                                                  configuration_choice_boxChoices, 0)
+                                                  configuration_choices, 0)
         self.configuration_choice_box.SetSelection(0)
         second_row_second_column.Add(self.configuration_choice_box, 0, wx.ALIGN_LEFT | wx.ALL | wx.EXPAND, 5)
 
@@ -100,16 +103,16 @@ class main_page(wx.Frame):
 
         second_row_fourth_column = wx.BoxSizer(wx.VERTICAL)
 
-        profile_choice_boxChoices = ['dev', 'production']
+        profile_choices = [u'dev', u'production']
 
         self.profile_choice_box = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize,
-                                            profile_choice_boxChoices, 0)
+                                            profile_choices, 0)
         self.profile_choice_box.SetSelection(0)
         second_row_fourth_column.Add(self.profile_choice_box, 0, wx.ALL | wx.EXPAND, 5)
 
         second_row.Add(second_row_fourth_column, 2, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, 5)
 
-        vertical_sizer_one.Add(second_row, 1, wx.EXPAND, 5)
+        main_sizer.Add(second_row, 1, wx.EXPAND, 5)
 
         third_row = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -121,20 +124,20 @@ class main_page(wx.Frame):
 
         third_row_second_column = wx.BoxSizer(wx.VERTICAL)
 
-        m_sdbSizer1 = wx.StdDialogButtonSizer()
-        self.m_sdbSizer1OK = wx.Button(self, wx.ID_OK)
-        m_sdbSizer1.AddButton(self.m_sdbSizer1OK)
-        self.m_sdbSizer1Cancel = wx.Button(self, wx.ID_CANCEL)
-        m_sdbSizer1.AddButton(self.m_sdbSizer1Cancel)
-        m_sdbSizer1.Realize();
+        button_sizer = wx.StdDialogButtonSizer()
+        self.ok_button = wx.Button(self, wx.ID_OK)
+        button_sizer.AddButton(self.ok_button)
+        self.cancel_button = wx.Button(self, wx.ID_CANCEL)
+        button_sizer.AddButton(self.cancel_button)
+        button_sizer.Realize()
 
-        third_row_second_column.Add(m_sdbSizer1, 1, wx.ALIGN_RIGHT, 10)
+        third_row_second_column.Add(button_sizer, 1, wx.ALIGN_RIGHT, 10)
 
         third_row.Add(third_row_second_column, 1, wx.EXPAND, 5)
 
-        vertical_sizer_one.Add(third_row, 1, wx.EXPAND, 5)
+        main_sizer.Add(third_row, 1, wx.EXPAND, 5)
 
-        self.SetSizer(vertical_sizer_one)
+        self.SetSizer(main_sizer)
         self.Layout()
 
         self.Centre(wx.BOTH)
@@ -143,11 +146,11 @@ class main_page(wx.Frame):
         self.m_dirPicker2.Bind(wx.EVT_DIRPICKER_CHANGED, self.set_root_directory)
         self.configuration_choice_box.Bind(wx.EVT_CHOICE, self.set_configuration)
         self.profile_choice_box.Bind(wx.EVT_CHOICE, self.set_profile)
-        self.m_sdbSizer1Cancel.Bind(wx.EVT_BUTTON, self.on_cancel)
-        self.m_sdbSizer1OK.Bind(wx.EVT_BUTTON, self.on_ok)
+        self.cancel_button.Bind(wx.EVT_BUTTON, self.on_cancel)
+        self.ok_button.Bind(wx.EVT_BUTTON, self.on_ok)
 
     @property
-    def root_directory(self):
+    def root_directory(self) -> str:
         """
         This is the accessor for the root directory property.
 
@@ -157,7 +160,7 @@ class main_page(wx.Frame):
         return self.__root_directory
 
     @property
-    def configuration(self):
+    def configuration(self) -> str:
         """
         This is the accessor for the configuration property.
 
@@ -167,7 +170,7 @@ class main_page(wx.Frame):
         return self.__configuration
 
     @property
-    def profile(self):
+    def profile(self) -> str:
         """
         This is the accessor for the profile property.
 
@@ -177,7 +180,7 @@ class main_page(wx.Frame):
         return self.__profile
 
     @property
-    def child_processes(self):
+    def child_processes(self) -> list[Popen]:
         """
         This is the accessor for the child processes property.
 
@@ -185,7 +188,7 @@ class main_page(wx.Frame):
         """
         return self.__child_processes
 
-    def __del__(self):
+    def __del__(self) -> None:
         """
         The main page object's destructor.
 
@@ -194,60 +197,60 @@ class main_page(wx.Frame):
 
         pass
 
-    def set_root_directory(self, event):
+    def set_root_directory(self, event) -> None:
         """
         This method modifies the main page's root directory property whenever the
         directory picker or its associated text control are changed.
 
-        :param event: Event     the onChange event fired by the directory picker
         :return: None           this method does not return a value
         """
 
+        event.Skip()
         self.__root_directory = self.m_dirPicker2.GetPath()
 
-    def set_configuration(self, event):
+    def set_configuration(self, event) -> None:
         """
         This method modifies the main page object's configuration property
         whenever the configuration selector is changed.
 
-        :param event: Event     the onChange event fired by the configuration selector
         :return: None           this method does not return a value
         """
 
-        # To be implemented!
         event.Skip()
+        self.__configuration = self.configuration_choice_box.GetString(self.configuration_choice_box.GetSelection())
 
-    def set_profile(self, event):
+    def set_profile(self, event) -> None:
         """
         This method modifies the main page object's profile property whenever the profile
         selector is changed.
 
-        :param event: Event     the onChange event fired by the profile selector
         :return: None           this method does not return a value
         """
 
+        event.Skip()
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
 
-    def on_cancel(self, event):
+    def on_cancel(self, event) -> None:
         """
         This method exits the BeardTrust Launcher, closing any applications opened by the Launcher
         in the process.
 
-        :param event: Event     the onClick event fired by the cancel button
-        :return: int            the integer representation of the c-style system error code
+        :return: None            this method does not return a value
         """
 
+        event.Skip()
         for process in self.__child_processes:
             os.kill(process.pid, signal.SIGINT)
         exit(0)
 
-    def on_ok(self, event):
+    def on_ok(self, event) -> None:
         """
         This method passes the current profile property of the main page object to the script that
         handles the launching of Maven-based Spring Boot applications.
 
-        :param event: Event     the onClick event fired by the ok button
         :return: None           this method does not return a value
         """
+
+        event.Skip()
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
         self.__child_processes.append(scripts.start.run_spring_boot_microservice(self.root_directory, self.profile))

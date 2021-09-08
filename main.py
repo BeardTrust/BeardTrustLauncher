@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-import argparse
+from argparse import ArgumentParser
+from argparse import Namespace
 
 import scripts.utils
 
-parser = argparse.ArgumentParser(description='Process command line arguments to determine which service to launch')
+parser = ArgumentParser(description='Process command line arguments to determine which service to launch')
 parser.add_argument('--root-directory', '-r', dest='root_directory', default='',
                     help="specify the project's root directory")
 parser.add_argument('--install', '-i', dest='install', help="install dependencies for " +
@@ -12,7 +13,7 @@ parser.add_argument('--install', '-i', dest='install', help="install dependencie
 args = parser.parse_args()
 
 
-def launch_cli(arguments):
+def launch_cli(arguments: Namespace) -> None:
     """
     This function handles launching the command line interface.
 
@@ -23,7 +24,7 @@ def launch_cli(arguments):
     command_line_interface(arguments)
 
 
-def launch_gui():
+def launch_gui() -> None:
     """
     This function handles launching the graphical user interface.
 
@@ -33,7 +34,7 @@ def launch_gui():
     graphical_user_interface()
 
 
-def main(arguments):
+def main(arguments: Namespace) -> None:
     """
     This is the primary function of the BeardTrust Launcher application.  It directs control to the appropriate
     module.

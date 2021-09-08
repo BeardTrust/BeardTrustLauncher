@@ -1,23 +1,64 @@
 #!/usr/bin/env python3
 
-import os
-import subprocess
+from os import chdir
+from os import setsid
+
+from subprocess import PIPE
+from subprocess import Popen
 
 
-def run_spring_boot_microservice(root_directory, profile):
+def run_spring_boot_microservice(root_directory: str, profile: str) -> Popen:
     """
     This function directs a call to the host system to launch a Maven-based Spring Boot application
     using the specified profile.
 
     :param root_directory: str          the path to the application's root directory
     :param profile: str                 the Spring profile to set as active
-    :return: process                    the newly launched process
+    :return: process                    the newly-created Popen object
     """
 
-    print("running 'mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=" + profile + "'" +
-          " from " + root_directory)
-    os.chdir(root_directory)
-    new_process = subprocess.Popen('mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=' +
-                                   profile, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+    launch_command = 'mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=' + profile
 
-    return new_process
+    output_launch_command(launch_command, root_directory)
+
+    chdir(root_directory)
+
+    return execute_command(launch_command)
+
+
+def run_npm_microservice(root_directory: str) -> Popen:
+    """
+    This function directs a call to the host system to launch an application using NPM.
+    :param root_directory: str          the string representation of the path to the application's root directory
+    :return: Popen                      the newly-created process
+    """
+    launch_command = 'npm install && npm start'
+
+    output_launch_command(launch_command, root_directory)
+
+    chdir(root_directory)
+
+    return execute_command(launch_command)
+
+
+def run_yarn_microservice(root_directory: str) -> Popen:
+    """
+    This function directs a call to the host system to launch an application using Yarn.
+    :param root_directory: str          the string representation of the path to the application's root directory
+    :return: Popen                      the newly-created process
+    """
+    launch_command = 'yarn install && yarn start'
+
+    output_launch_command(launch_command, root_directory)
+
+    chdir(root_directory)
+
+    return Popen(launch_command, stdout=PIPE, shell=True, preexec_fn=setsid)
+
+
+def output_launch_command(launch_command: str, root_directory: str) -> None:
+    print("[= BeardTrust Launcher =] Running '" + launch_command + "' from " + root_directory)
+
+
+def execute_command(launch_command: str) -> Popen:
+    return Popen(launch_command, stdout=PIPE, shell=True, preexec_fn=setsid)

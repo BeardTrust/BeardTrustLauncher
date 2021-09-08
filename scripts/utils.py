@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import subprocess
+from subprocess import run
 
-import pkg_resources
+from pkg_resources import working_set
 
 
-def check_for_wxpython(mode):
+def check_for_wxpython(mode: str) -> None:
     """
     This function determines whether or not wxPython has been installed on the host system.  If
     wxPython is not found, this function will either prompt the user to install wxPython if the
@@ -15,7 +15,7 @@ def check_for_wxpython(mode):
     :param mode: str            the interface being utilized by the user (cli or gui)
     :return: None               this function does not return a value
     """
-    installed_packages = pkg_resources.working_set
+    installed_packages = working_set
     installed_packages_list = sorted(["%s" % package.key for package in installed_packages])
 
     if 'wxpython' not in installed_packages_list:
@@ -29,10 +29,10 @@ def check_for_wxpython(mode):
                 install_dependencies()
 
 
-def install_dependencies():
+def install_dependencies() -> None:
     """
     This function runs the command to install wxPython on the host system.
 
     :return: None           this function does not return a value
     """
-    subprocess.run('pip install wxPython', shell=True)
+    run('pip install wxPython', shell=True)

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 from os import chdir
-from os import setsid
 
-from subprocess import PIPE
+from subprocess import PIPE, DEVNULL
 from subprocess import Popen
 
 
@@ -53,7 +52,7 @@ def run_yarn_microservice(root_directory: str) -> Popen:
 
     chdir(root_directory)
 
-    return Popen(launch_command, stdout=PIPE, shell=True, preexec_fn=setsid)
+    return execute_command(launch_command)
 
 
 def output_launch_command(launch_command: str, root_directory: str) -> None:
@@ -61,4 +60,4 @@ def output_launch_command(launch_command: str, root_directory: str) -> None:
 
 
 def execute_command(launch_command: str) -> Popen:
-    return Popen(launch_command, stdout=PIPE, shell=True, preexec_fn=setsid)
+    return Popen(launch_command, stdout=DEVNULL, shell=True)

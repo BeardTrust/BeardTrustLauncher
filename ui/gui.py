@@ -83,7 +83,7 @@ class LauncherWindow(wx.Frame):
 
         second_row_second_column = wx.BoxSizer(wx.VERTICAL)
 
-        configuration_choices = [u'Local Collection', u'Spring Boot', u'NPM', u'Yarn']
+        configuration_choices = [u'Local Collection', u'Spring-Boot', u'NPM', u'Yarn']
         self.configuration_choice_box = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize,
                                                   configuration_choices, 0)
         self.configuration_choice_box.SetSelection(0)

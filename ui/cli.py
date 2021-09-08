@@ -26,7 +26,15 @@ def command_line_interface(args: Namespace) -> None:
 
 def launch_application(args):
     process_list = open('.beardtrust-processes.txt', 'a')
-    process = scripts.start.run_spring_boot_microservice(args.root_directory, args.profile)
+    process = None
+
+    if args.configuration.lower() == 'spring-boot':
+        process = scripts.start.run_spring_boot_microservice(args.root_directory, args.profile)
+    elif args.configuration.lower() == 'npm':
+        process = scripts.start.run_npm_microservice(args.root_directory)
+    elif args.configuration.lower() == 'yarn':
+        process = scripts.start.run_yarn_microservice(args.root_directory)
+
     process_list.write(str(process.pid) + ',')
     process_list.close()
 
@@ -35,9 +43,16 @@ def close_applications():
     process_list = open(process_list_filename, 'r')
     processes = process_list.read().split(',')
 
-    for process in processes:
-        if len(process) > 0:
-            os.kill(int(process), signal.SIGINT)
+    for pid in processes:
+        try:
+            if len(pid) > 0:
+                process_details = subprocess.call('ps -A | grep ' + pid, shell=True)
+                print(process_details)
+                process = subprocess.Popen(pid)
+                process.communicate(signal.SIGINT)
+                os.kill(int(process), signal.SIGINT)
+        except ProcessLookupError:
+            pass
 
     process_list.close()
     process_list = open(process_list_filename, 'w')

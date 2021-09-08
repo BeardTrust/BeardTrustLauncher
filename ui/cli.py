@@ -3,6 +3,8 @@ import os
 import signal
 import subprocess
 
+from scripts.process_management import operating_system
+
 from argparse import Namespace
 
 import scripts.process_management
@@ -49,8 +51,7 @@ def close_applications():
                 process_details = subprocess.call('ps -A | grep ' + pid, shell=True)
                 print(process_details)
                 process = subprocess.Popen(pid)
-                process.communicate(signal.SIGINT)
-                os.kill(int(process), signal.SIGINT)
+                scripts.process_management.terminate_process(process)
         except ProcessLookupError:
             pass
 

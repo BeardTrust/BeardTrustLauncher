@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-import os
-import subprocess
+import scripts.start
+
 
 def command_line_interface(args):
-    print("running 'mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev'" +
-          " from args.root_directory")
-    os.chdir(args.root_directory)
-    subprocess.call('mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev', shell=True)
+    """
+    This function launches the specified Maven-based Spring Boot application via the command line interface.
+
+    :param args: str[]          the list of command line arguments
+    :return: None               this function does not return a value
+    """
+    scripts.start.run_spring_boot_microservice(args)

@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 
-import os
-import subprocess
-
 import wx
 import wx.xrc
+
 import scripts.start
 
 
 def graphical_user_interface():
+    """
+    This function instantiates the graphical user interface and launches the primary application loop.
+
+    :return: None           this function does not return a value
+    """
     app = wx.App()
     page = main_page(None)
     page.Show()
@@ -16,8 +19,19 @@ def graphical_user_interface():
 
 
 class main_page(wx.Frame):
+    """
+    This class represents the primary frame, or window, of the graphical user interface.  It encapsulates
+    all of the logic for transferring information from the interface to the scripts that perform the
+    business logic of the application.
+    """
 
     def __init__(self, parent):
+        """
+        The constructor for the main page takes a parent object as an argument and assembles the main
+        page object.
+
+        :param parent: wx.Frame             the wx.Frame object that is responsible for this object
+        """
         wx.Frame.__init__(self, parent, id=wx.ID_ANY, title=u"BeardTrust Launcher", pos=wx.DefaultPosition,
                           size=wx.Size(500, 300), style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
 
@@ -129,36 +143,97 @@ class main_page(wx.Frame):
         self.m_sdbSizer1Cancel.Bind(wx.EVT_BUTTON, self.on_cancel)
         self.m_sdbSizer1OK.Bind(wx.EVT_BUTTON, self.on_ok)
 
-
     @property
     def root_directory(self):
+        """
+        This is the accessor for the root directory property.
+
+        :return: str            the object's root directory
+        """
+
         return self.__root_directory
 
     @property
     def configuration(self):
+        """
+        This is the accessor for the configuration property.
+
+        :return: str            the object's configuration
+        """
+
         return self.__configuration
 
     @property
     def profile(self):
+        """
+        This is the accessor for the profile property.
+
+        :return: str            the object's spring profile
+        """
+
         return self.__profile
 
     def __del__(self):
+        """
+        The main page object's destructor.
+
+        :return: None           this method does not return a value
+        """
+
         pass
 
     def set_root_directory(self, event):
+        """
+        This method modifies the main page's root directory property whenever the
+        directory picker or its associated text control are changed.
+
+        :param event: Event     the onChange event fired by the directory picker
+        :return: None           this method does not return a value
+        """
+
         self.__root_directory = self.m_dirPicker2.GetPath()
 
     def set_configuration(self, event):
+        """
+        This method modifies the main page object's configuration property
+        whenever the configuration selector is changed.
+
+        :param event: Event     the onChange event fired by the configuration selector
+        :return: None           this method does not return a value
+        """
+
         # To be implemented!
         event.Skip()
 
     def set_profile(self, event):
+        """
+        This method modifies the main page object's profile property whenever the profile
+        selector is changed.
+
+        :param event: Event     the onChange event fired by the profile selector
+        :return: None           this method does not return a value
+        """
+
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
 
     def on_cancel(self, event):
+        """
+        This method exits the BeardTrust Launcher, closing any applications opened by the Launcher
+        in the process.
+
+        :param event: Event     the onClick event fired by the cancel button
+        :return: int            the integer representation of the c-style system error code
+        """
+
         exit(0)
 
     def on_ok(self, event):
-        self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
-        scripts.start.start_application(self.root_directory, self.profile)
+        """
+        This method passes the current profile property of the main page object to the script that
+        handles the launching of Maven-based Spring Boot applications.
 
+        :param event: Event     the onClick event fired by the ok button
+        :return: None           this method does not return a value
+        """
+        self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
+        scripts.start.run_spring_boot_microservice(self.root_directory, self.profile)

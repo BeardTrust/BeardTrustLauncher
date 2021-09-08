@@ -48,8 +48,6 @@ def close_applications():
     for pid in processes:
         try:
             if len(pid) > 0:
-                process_details = subprocess.call('ps -A | grep ' + pid, shell=True)
-                print(process_details)
                 process = subprocess.Popen(pid)
                 scripts.process_management.terminate_process(process)
         except ProcessLookupError:

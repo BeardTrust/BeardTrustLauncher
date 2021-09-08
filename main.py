@@ -3,8 +3,6 @@
 import argparse
 
 import scripts.utils
-import ui.cli
-import ui.gui
 
 parser = argparse.ArgumentParser(description='Process command line arguments to determine which service to launch')
 parser.add_argument('--root-directory', '-r', dest='root_directory', default='',
@@ -15,11 +13,13 @@ args = parser.parse_args()
 
 
 def launch_cli(arguments):
-    ui.cli.command_line_interface(arguments)
+    from ui.cli import command_line_interface
+    command_line_interface(arguments)
 
 
 def launch_gui():
-    ui.gui.graphical_user_interface()
+    from ui.gui import graphical_user_interface
+    graphical_user_interface()
 
 
 def main(arguments):
@@ -33,10 +33,10 @@ def main(arguments):
     if arguments.install:
         scripts.utils.check_for_wxpython('cli')
     elif len(arguments.root_directory) > 0:
-        ui.cli.command_line_interface(arguments)
+        launch_cli(arguments)
     else:
         scripts.utils.check_for_wxpython('gui')
-        ui.gui.graphical_user_interface()
+        launch_gui()
 
 
 if __name__ == '__main__':

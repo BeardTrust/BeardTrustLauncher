@@ -59,7 +59,8 @@ def output_launch_command(launch_command: list[str], root_directory: str) -> Non
 
 def execute_command(launch_command: list[str]) -> subprocess.Popen:
     if platform.system().lower() == 'windows':
-        process = subprocess.Popen(launch_command, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+        process = subprocess.Popen(launch_command, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+                                   shell=True)
     else:
         process = subprocess.Popen(launch_command, stdout=subprocess.DEVNULL)
 

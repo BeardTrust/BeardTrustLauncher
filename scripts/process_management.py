@@ -3,6 +3,8 @@ import subprocess
 import platform
 from os import chdir
 
+operating_system = platform.system().lower()
+
 def run_spring_boot_microservice(root_directory: str, profile: str) -> subprocess.Popen:
     """
     This function directs a call to the host system to launch a Maven-based Spring Boot application
@@ -58,10 +60,21 @@ def output_launch_command(launch_command: list[str], root_directory: str) -> Non
 
 
 def execute_command(launch_command: list[str]) -> subprocess.Popen:
-    if platform.system().lower() == 'windows':
+    if operating_system == 'windows':
         process = subprocess.Popen(launch_command, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
                                    shell=True)
     else:
         process = subprocess.Popen(launch_command, stdout=subprocess.DEVNULL)
 
     return process
+
+
+def terminate_process(process: subprocess.Popen) -> int:
+    return_value = 0
+
+    if operating_system == 'windows':
+        return_value = subprocess.call(['taskkill', '/F', '/T', '/PID', str(process.pid)])
+    else:
+        process.terminate()
+
+    return return_value

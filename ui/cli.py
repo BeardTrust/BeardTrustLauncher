@@ -5,7 +5,7 @@ import subprocess
 
 from argparse import Namespace
 
-import scripts.start
+import scripts.process_management
 
 process_list_filename = '.beardtrust-processes.txt'
 
@@ -29,11 +29,11 @@ def launch_application(args):
     process = None
 
     if args.configuration.lower() == 'spring-boot':
-        process = scripts.start.run_spring_boot_microservice(args.root_directory, args.profile)
+        process = scripts.process_management.run_spring_boot_microservice(args.root_directory, args.profile)
     elif args.configuration.lower() == 'npm':
-        process = scripts.start.run_npm_microservice(args.root_directory)
+        process = scripts.process_management.run_npm_microservice(args.root_directory)
     elif args.configuration.lower() == 'yarn':
-        process = scripts.start.run_yarn_microservice(args.root_directory)
+        process = scripts.process_management.run_yarn_microservice(args.root_directory)
 
     process_list.write(str(process.pid) + ',')
     process_list.close()

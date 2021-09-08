@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-import os
-import signal
+
 from subprocess import Popen
 
 import wx
 import wx.xrc
 
-import scripts.start
+import scripts.process_management
 
 
 def graphical_user_interface() -> None:
@@ -237,10 +236,11 @@ class LauncherWindow(wx.Frame):
         :return: None            this method does not return a value
         """
 
+        exit_code = 0
         event.Skip()
         for process in self.__child_processes:
-            process.terminate()
-        exit(0)
+            exit_code += scripts.process_management.terminate_process(process)
+        exit(exit_code)
 
     def on_ok(self, event) -> None:
         """
@@ -252,4 +252,5 @@ class LauncherWindow(wx.Frame):
 
         event.Skip()
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
-        self.__child_processes.append(scripts.start.run_spring_boot_microservice(self.root_directory, self.profile))
+        self.__child_processes.append(
+            scripts.process_management.run_spring_boot_microservice(self.root_directory, self.profile))

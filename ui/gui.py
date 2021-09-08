@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+import signal
 
 import wx
 import wx.xrc
@@ -38,6 +40,7 @@ class main_page(wx.Frame):
         self.__root_directory = ''
         self.__configuration = ''
         self.__profile = ''
+        self.__child_processes = []
         self.SetSizeHints(wx.Size(500, 300), wx.Size(500, 300))
 
         vertical_sizer_one = wx.BoxSizer(wx.VERTICAL)
@@ -173,6 +176,15 @@ class main_page(wx.Frame):
 
         return self.__profile
 
+    @property
+    def child_processes(self):
+        """
+        This is the accessor for the child processes property.
+
+        :return: process[]      the list of child processes
+        """
+        return self.__child_processes
+
     def __del__(self):
         """
         The main page object's destructor.
@@ -225,6 +237,8 @@ class main_page(wx.Frame):
         :return: int            the integer representation of the c-style system error code
         """
 
+        for process in self.__child_processes:
+            os.kill(process.pid, signal.SIGINT)
         exit(0)
 
     def on_ok(self, event):
@@ -236,4 +250,4 @@ class main_page(wx.Frame):
         :return: None           this method does not return a value
         """
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
-        scripts.start.run_spring_boot_microservice(self.root_directory, self.profile)
+        self.__child_processes.append(scripts.start.run_spring_boot_microservice(self.root_directory, self.profile))

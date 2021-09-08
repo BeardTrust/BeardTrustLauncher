@@ -11,11 +11,13 @@ def run_spring_boot_microservice(root_directory, profile):
 
     :param root_directory: str          the path to the application's root directory
     :param profile: str                 the Spring profile to set as active
-    :return: None                       this function does not return a value
+    :return: process                    the newly launched process
     """
 
     print("running 'mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=" + profile + "'" +
           " from " + root_directory)
     os.chdir(root_directory)
-    subprocess.Popen('mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=' + profile,
-                     shell=True)
+    new_process = subprocess.Popen('mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=' +
+                                   profile, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+
+    return new_process

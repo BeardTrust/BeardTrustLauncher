@@ -57,7 +57,7 @@ def run_yarn_microservice(root_directory: str) -> Popen:
 
 
 def output_launch_command(launch_command: str, root_directory: str) -> None:
-    print("[= BeardTrust Launcher =] Running '" + launch_command + "' from " + root_directory)
+    print("[= BeardTrust Launcher =] Running '" + launch_command + "' from '" + root_directory + "'")
 
 
 def execute_command(launch_command: str) -> Popen:

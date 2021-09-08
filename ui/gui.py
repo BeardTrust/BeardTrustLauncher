@@ -6,18 +6,17 @@ from subprocess import Popen
 import wx
 import wx.xrc
 
-from wx import Frame
-
 import scripts.start
 
 
-def graphical_user_interface():
+def graphical_user_interface() -> None:
     """
     This function instantiates the graphical user interface and launches the primary application loop.
 
     :return: None           this function does not return a value
     """
     app = wx.App()
+    # noinspection PyTypeChecker
     page = LauncherWindow(None)
     page.Show()
     app.MainLoop()

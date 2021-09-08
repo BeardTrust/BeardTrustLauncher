@@ -6,10 +6,15 @@ from argparse import Namespace
 import scripts.utils
 
 parser = ArgumentParser(description='Process command line arguments to determine which service to launch')
-parser.add_argument('--root-directory', '-r', dest='root_directory', default='',
-                    help="specify the project's root directory")
+parser.add_argument('--configuration', '-c', dest='configuration', default='',
+                    help="specify the configuration of the project to launch")
 parser.add_argument('--install', '-i', dest='install', help="install dependencies for " +
                                                             "BeardTrust Launcher", action="store_true")
+parser.add_argument('--profile', '-p', dest='profile', default='',
+                    help="specify the project's Spring profile")
+parser.add_argument('--root-directory', '-r', dest='root_directory', default='',
+                    help="specify the project's root directory")
+
 args = parser.parse_args()
 
 

@@ -239,7 +239,7 @@ class LauncherWindow(wx.Frame):
 
         event.Skip()
         for process in self.__child_processes:
-            os.kill(process.pid, signal.SIGINT)
+            process.terminate()
         exit(0)
 
     def on_ok(self, event) -> None:

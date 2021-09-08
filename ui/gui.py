@@ -8,6 +8,13 @@ import wx.xrc
 import scripts.start
 
 
+def graphical_user_interface():
+    app = wx.App()
+    page = main_page(None)
+    page.Show()
+    app.MainLoop()
+
+
 class main_page(wx.Frame):
 
     def __init__(self, parent):
@@ -154,3 +161,4 @@ class main_page(wx.Frame):
     def on_ok(self, event):
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
         scripts.start.start_application(self.root_directory, self.profile)
+

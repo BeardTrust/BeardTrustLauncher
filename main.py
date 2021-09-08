@@ -1,28 +1,42 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
-import subprocess
 
-import wx
-
-import ui.ui
+import scripts.utils
+import ui.cli
+import ui.gui
 
 parser = argparse.ArgumentParser(description='Process command line arguments to determine which service to launch')
-parser.add_argument('--root-directory', '-r', dest='root_directory', help="specify the project's root directory")
-
+parser.add_argument('--root-directory', '-r', dest='root_directory', default='',
+                    help="specify the project's root directory")
+parser.add_argument('--install', '-i', dest='install', help="install dependencies for " +
+                    "BeardTrust Launcher", action="store_true")
 args = parser.parse_args()
 
-def main(arguments):
 
-    app = wx.App()
-    page = ui.ui.main_page(None)
-    page.Show()
-    app.MainLoop()
-    # print("running 'mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev'" +
-    #       " from args.root_directory")
-    # os.chdir(args.root_directory)
-    # subprocess.call('mvn clean spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev', shell=True)
+def launch_cli(arguments):
+    ui.cli.command_line_interface(arguments)
+
+
+def launch_gui():
+    ui.gui.graphical_user_interface()
+
+
+def main(arguments):
+    """
+    This is the primary function of the BeardTrust Launcher application.  It instantiates the GUI and handles the
+    main application loop.
+
+    :param arguments: the list of arguments passed via the command line when the application is run
+    :return: None
+    """
+    if arguments.install:
+        scripts.utils.check_for_wxpython('cli')
+    elif len(arguments.root_directory) > 0:
+        ui.cli.command_line_interface(arguments)
+    else:
+        scripts.utils.check_for_wxpython('gui')
+        ui.gui.graphical_user_interface()
 
 
 if __name__ == '__main__':

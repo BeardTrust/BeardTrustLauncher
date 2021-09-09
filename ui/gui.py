@@ -66,7 +66,7 @@ class LauncherWindow(wx.Frame):
 
         first_row.Add(first_row_second_column, 3, wx.ALIGN_BOTTOM, 5)
 
-        main_sizer.Add(first_row, 1, wx.EXPAND, 5)
+        main_sizer.Add(first_row, 1, wx.EXPAND | wx.ALL, 5)
 
         second_row = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -110,7 +110,7 @@ class LauncherWindow(wx.Frame):
 
         second_row.Add(second_row_fourth_column, 2, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, 5)
 
-        main_sizer.Add(second_row, 1, wx.EXPAND, 5)
+        main_sizer.Add(second_row, 1, wx.EXPAND | wx.ALL, 5)
 
         third_row = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -133,7 +133,7 @@ class LauncherWindow(wx.Frame):
 
         third_row.Add(third_row_second_column, 1, wx.EXPAND, 5)
 
-        main_sizer.Add(third_row, 1, wx.EXPAND, 5)
+        main_sizer.Add(third_row, 1, wx.EXPAND | wx.ALL, 5)
 
         self.SetSizer(main_sizer)
         self.Layout()

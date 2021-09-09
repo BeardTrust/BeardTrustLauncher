@@ -3,6 +3,8 @@ import subprocess
 import platform
 from os import chdir
 
+import scripts.utils
+
 operating_system = platform.system().lower()
 
 def run_spring_boot_microservice(root_directory: str, profile: str) -> subprocess.Popen:
@@ -31,7 +33,7 @@ def run_npm_microservice(root_directory: str) -> subprocess.Popen:
     :param root_directory: str          the string representation of the path to the application's root directory
     :return: Popen                      the newly-created process
     """
-    launch_command = ['npm', 'install', '&&', 'npm', 'start']
+    launch_command = ['npm', 'start']
 
     output_launch_command(launch_command, root_directory)
 
@@ -46,7 +48,7 @@ def run_yarn_microservice(root_directory: str) -> subprocess.Popen:
     :param root_directory: str          the string representation of the path to the application's root directory
     :return: Popen                      the newly-created process
     """
-    launch_command = ['yarn', 'install', '&&', 'yarn', 'start']
+    launch_command = ['yarn', 'start']
 
     output_launch_command(launch_command, root_directory)
 
@@ -78,3 +80,22 @@ def terminate_process(process: subprocess.Popen) -> int:
         process.terminate()
 
     return return_value
+
+
+def launch_all_applications(root_directory: str, profile: str) -> list[subprocess.Popen]:
+    services = scripts.utils.get_local_group_service_paths(root_directory)
+
+    processes = []
+
+    for key in services.keys():
+        chdir(services[key])
+
+        if key == 'adminportal':
+            processes.append(run_yarn_microservice(services[key]))
+        elif key == 'userportal':
+            processes.append(run_npm_microservice(services[key]))
+        else:
+            processes.append(run_spring_boot_microservice(services[key], profile))
+
+        chdir(root_directory)
+    return processes

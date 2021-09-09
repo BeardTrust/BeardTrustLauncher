@@ -4,7 +4,6 @@ import signal
 import subprocess
 
 from scripts.process_management import operating_system
-
 from argparse import Namespace
 
 import scripts.process_management

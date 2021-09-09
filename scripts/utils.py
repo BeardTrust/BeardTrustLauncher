@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import os
 from subprocess import run
 
 from pkg_resources import working_set
@@ -35,4 +35,19 @@ def install_dependencies() -> None:
 
     :return: None           this function does not return a value
     """
-    run('pip install wxPython', shell=True)
+    run(['pip', 'install', 'wxPython'])
+
+
+def get_local_group_service_paths(root_directory: str) -> dict[str, str]:
+    services = {
+        'accountservice': root_directory + '/AccountService',
+        'adminportal': root_directory + '/AdminPortal',
+        'cardservice': root_directory + '/CardService',
+        'discoveryservice': root_directory + '/DiscoveryService',
+        'gateway': root_directory + '/Gateway',
+        'loanservice': root_directory + '/LoanService',
+        'userportal': root_directory + '/UserPortal',
+        'userservice': root_directory + '/UserService'
+    }
+
+    return services

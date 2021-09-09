@@ -82,7 +82,7 @@ class LauncherWindow(wx.Frame):
 
         second_row_second_column = wx.BoxSizer(wx.VERTICAL)
 
-        configuration_choices = [u'Spring-Boot', u'Local Collection', u'NPM', u'Yarn']
+        configuration_choices = [u'All - Native', u'Spring-Boot', u'NPM', u'Yarn']
         self.configuration_choice_box = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize,
                                                   configuration_choices, 0)
         self.configuration_choice_box.SetSelection(0)
@@ -238,6 +238,7 @@ class LauncherWindow(wx.Frame):
 
         exit_code = 0
         event.Skip()
+
         for process in self.__child_processes:
             exit_code += scripts.process_management.terminate_process(process)
         exit(exit_code)
@@ -252,5 +253,12 @@ class LauncherWindow(wx.Frame):
 
         event.Skip()
         self.__profile = self.profile_choice_box.GetString(self.profile_choice_box.GetSelection())
-        self.__child_processes.append(
+        self.__configuration = self.configuration_choice_box.GetString(self.configuration_choice_box.GetSelection())
+
+        if self.__configuration.lower() == 'spring-boot':
+            self.__child_processes.append(
             scripts.process_management.run_spring_boot_microservice(self.root_directory, self.profile))
+        elif self.__configuration.lower() == 'all - native':
+            process_list = scripts.process_management.launch_all_applications(self.root_directory, self.profile)
+            for process in process_list:
+                self.__child_processes.append(process)

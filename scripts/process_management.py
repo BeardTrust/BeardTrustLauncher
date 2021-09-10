@@ -93,7 +93,7 @@ def launch_all_applications(root_directory: str, profile: str) -> list[subproces
         if key == 'adminportal':
             processes.append(run_yarn_microservice(services[key]))
         elif key == 'userportal':
-            processes.append(run_npm_microservice(services[key]))
+            processes.append(run_yarn_microservice(services[key]))
         else:
             processes.append(run_spring_boot_microservice(services[key], profile))
 

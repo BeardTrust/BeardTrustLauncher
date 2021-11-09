@@ -7,6 +7,7 @@ import scripts.utils
 
 operating_system = platform.system().lower()
 
+
 def run_spring_boot_microservice(root_directory: str, profile: str) -> subprocess.Popen:
     """
     This function directs a call to the host system to launch a Maven-based Spring Boot application

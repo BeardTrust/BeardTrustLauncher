@@ -46,6 +46,7 @@ def get_local_group_service_paths(root_directory: str) -> dict[str, str]:
         'discoveryservice': root_directory + '/DiscoveryService',
         'gateway': root_directory + '/Gateway',
         'loanservice': root_directory + '/LoanService',
+        'transactionservice': root_directory + '/TransactionService',
         'userportal': root_directory + '/UserPortal',
         'userservice': root_directory + '/UserService'
     }

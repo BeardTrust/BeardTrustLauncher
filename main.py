@@ -19,8 +19,6 @@ parser.add_argument('--root-directory', '-r', dest='root_directory', default='',
 args = parser.parse_args()
 
 
-
-
 def launch_cli(arguments: Namespace) -> None:
     """
     This function handles launching the command line interface.
